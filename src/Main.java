@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -99,6 +100,7 @@ public class Main {
     static final double IVA = 0.10;                   // IVA del 10% expresado en decimal
     static final double PRECIO_BASE = 500.0;          // Precio base de una matrícula
     static final double DESC_FAMILIA_NUMEROSA = 0.10; // Descuento del 10% por familia numerosa
+    static final int HIJOS_FAMILIA_NUMEROSA = 3;
 
     /* =========================================================
        2) ATRIBUTOS O VARIABLES DE CLASE
@@ -362,6 +364,23 @@ public class Main {
         } else {
             pagoFraccionado = false;
         }
+
+
+        System.out.print("Introduce el número de hijos: ");
+        int numeroHijos = sc.nextInt();
+
+        if (numeroHijos < 0){
+            System.out.println("El número de hijos  no puede ser menor 0");
+            numeroHijos = 0;
+        }
+
+        if (numeroHijos >= HIJOS_FAMILIA_NUMEROSA) {
+            familiaNumerosa = true;
+        } else {
+            familiaNumerosa = false;
+        }
+
+
 
 
          /* =====================================================
@@ -631,6 +650,8 @@ public class Main {
 
         System.out.println("==============================================\n");
     }
+
+
 
     /* =========================================================
        5) MÉTODO 1: saludar()
