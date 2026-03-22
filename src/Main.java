@@ -99,8 +99,13 @@ public class Main {
     static final double NOTA_APROBADO = 5.0;          // Nota mínima para aprobar una asignatura
     static final double IVA = 0.10;                   // IVA del 10% expresado en decimal
     static final double PRECIO_BASE = 500.0;          // Precio base de una matrícula
-    static final double DESC_FAMILIA_NUMEROSA = 0.10; // Descuento del 10% por familia numerosa
+    static final double DESC_FAMILIA_NUMEROSA = 0.10;
+    static final double DESC_MENOR_EDAD = 0.5;// Descuento del 10% por familia numerosa
+    static final double DESC_MAYOR_65 = 0.10;
     static final int HIJOS_FAMILIA_NUMEROSA = 3;
+    static final double DESC_MAX = 0.15;
+    static final double RECARGO_FRACIONADO_ALTO = 0.10;
+    static final double RECARGO_FRACIONADO_BAJO = 0.05;
 
     /* =========================================================
        2) ATRIBUTOS O VARIABLES DE CLASE
@@ -211,6 +216,8 @@ public class Main {
         System.out.println(saludar("María", 21));
         */
         leerDatos();
+
+
 
     }
 
@@ -652,6 +659,72 @@ public class Main {
     }
 
 
+    static double calcularMedia ( double n1, double n2 ){
+            return (n1+n2) / 2;
+    }
+
+    static boolean esAprobado (double media){
+        return media >= NOTA_APROBADO;
+    }
+
+    static double calcularPrecioFinal (){
+
+        double descuento = 0.0;
+        double recargo = 0.0;
+
+        if (familiaNumerosa){
+            descuento += DESC_FAMILIA_NUMEROSA;
+        }
+
+        if (edad < 18){
+            descuento += DESC_MENOR_EDAD;
+        } else if (edad > 65){
+            descuento += DESC_MAYOR_65;
+        }
+
+        if (descuento > DESC_MAX){
+            descuento = DESC_MAX;
+        }
+
+        if (pagoFraccionado && PRECIO_BASE >= 500 ) {
+           recargo = RECARGO_FRACIONADO_ALTO;
+        } else if (pagoFraccionado){
+            recargo = RECARGO_FRACIONADO_BAJO;
+        }
+
+        double descuentoEuros = PRECIO_BASE * descuento;
+        double recargoEuros = PRECIO_BASE * recargo;
+        double cantidadIva = (PRECIO_BASE - descuentoEuros + recargoEuros) * IVA;
+
+        return (PRECIO_BASE - descuentoEuros + recargoEuros) + cantidadIva;
+
+
+
+
+    }
+
+    static void imprimirInforme(double media, double precioFinal){
+
+        System.out.println("\n\t---INFORME---");
+        System.out.println("Alumno: " + nombre);
+        System.out.println("Alumno: " + edad);
+
+        if (familiaNumerosa) {
+            System.out.println("Familia numerosa: SÍ");
+        } else {
+            System.out.println("Familia numerosa: NO");
+        }
+
+        if (esAprobado(media)){
+            System.out.println("ESTADO: APTO");
+        } else {
+            System.out.println("ESTADO: NO APTO");
+        }
+
+
+
+    }
+
 
     /* =========================================================
        5) MÉTODO 1: saludar()
@@ -771,3 +844,4 @@ public class Main {
         return "Hola " + nombre + " " + mensajeEsMenor;
     }
 }
+
