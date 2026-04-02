@@ -217,7 +217,15 @@ public class Main {
         */
         leerDatos();
 
+        double media= calcularMedia(nota1, nota2);
 
+        boolean aprobado  = esAprobado(media);
+
+        double precionFinal = calcularPrecioFinal();
+
+        imprimirInforme(media, precionFinal);
+
+        sc.close();
 
     }
 
@@ -659,70 +667,104 @@ public class Main {
     }
 
 
-    static double calcularMedia ( double n1, double n2 ){
-            return (n1+n2) / 2;
+    // Método que calcula la media de dos números (por ejemplo, dos notas)
+    static double calcularMedia(double n1, double n2) {
+        // Suma las dos notas y divide entre 2 para obtener la media aritmética
+        return (n1 + n2) / 2;
     }
 
-    static boolean esAprobado (double media){
+
+    // Método que determina si una media es suficiente para aprobar
+    static boolean esAprobado(double media) {
+        // Devuelve true si la media es mayor o igual que la nota mínima para aprobar
+        // NOTA_APROBADO es una constante definida en otra parte del programa
         return media >= NOTA_APROBADO;
     }
 
-    static double calcularPrecioFinal (){
 
+    // Método que calcula el precio final aplicando descuentos, recargos e IVA
+    static double calcularPrecioFinal() {
+
+        // Variables para acumular descuentos y recargos (en porcentaje, no en euros)
         double descuento = 0.0;
         double recargo = 0.0;
 
-        if (familiaNumerosa){
+        // Si el alumno pertenece a familia numerosa, se añade su descuento correspondiente
+        if (familiaNumerosa) {
             descuento += DESC_FAMILIA_NUMEROSA;
         }
 
-        if (edad < 18){
+        // Descuentos según edad:
+        // - Menores de edad
+        // - Mayores de 65
+        if (edad < 18) {
             descuento += DESC_MENOR_EDAD;
-        } else if (edad > 65){
+        } else if (edad > 65) {
             descuento += DESC_MAYOR_65;
         }
 
-        if (descuento > DESC_MAX){
+        // Limitar el descuento máximo permitido
+        // Evita que la suma de descuentos supere un valor establecido
+        if (descuento > DESC_MAX) {
             descuento = DESC_MAX;
         }
 
-        if (pagoFraccionado && PRECIO_BASE >= 500 ) {
-           recargo = RECARGO_FRACIONADO_ALTO;
-        } else if (pagoFraccionado){
+        // Aplicación de recargos por pago fraccionado:
+        // - Si el precio base es alto (>= 500), recargo mayor
+        // - Si no, recargo menor
+        if (pagoFraccionado && PRECIO_BASE >= 500) {
+            recargo = RECARGO_FRACIONADO_ALTO;
+        } else if (pagoFraccionado) {
             recargo = RECARGO_FRACIONADO_BAJO;
         }
 
+        // Conversión de los porcentajes a cantidades en euros
         double descuentoEuros = PRECIO_BASE * descuento;
         double recargoEuros = PRECIO_BASE * recargo;
+
+        // Cálculo del IVA sobre el precio tras aplicar descuentos y recargos
         double cantidadIva = (PRECIO_BASE - descuentoEuros + recargoEuros) * IVA;
 
+        // Precio final = base - descuento + recargo + IVA
         return (PRECIO_BASE - descuentoEuros + recargoEuros) + cantidadIva;
-
-
-
-
     }
 
-    static void imprimirInforme(double media, double precioFinal){
 
+
+    // Método que imprime un informe con todos los datos del alumno
+    static void imprimirInforme(double media, double precioFinal) {
+
+        // Cabecera del informe
         System.out.println("\n\t---INFORME---");
-        System.out.println("Alumno: " + nombre);
-        System.out.println("Alumno: " + edad);
 
+        // Datos básicos del alumno
+        System.out.println("Alumno: " + nombre);
+        System.out.println("Edad: " + edad);
+
+        // Indica si pertenece a familia numerosa
         if (familiaNumerosa) {
             System.out.println("Familia numerosa: SÍ");
         } else {
             System.out.println("Familia numerosa: NO");
         }
 
-        if (esAprobado(media)){
+        // Muestra si el alumno está aprobado o no usando el método anterior
+        if (esAprobado(media)) {
             System.out.println("ESTADO: APTO");
         } else {
             System.out.println("ESTADO: NO APTO");
         }
 
+        // Uso del operador ternario para simplificar un if-else
+        // Si pagoFraccionado es true → "Sí", si no → "No"
+        String textoFraccionado = (pagoFraccionado) ? "Sí" : "No";
+        System.out.println("Pago Fraccionado: " + textoFraccionado);
 
+        // Mostrar la media con 2 decimales
+        System.out.printf("Media: %.2f%n", media);
 
+        // Mostrar el precio final con 2 decimales y símbolo de euro
+        System.out.printf("Precio Final: %.2f €%n", precioFinal);
     }
 
 
